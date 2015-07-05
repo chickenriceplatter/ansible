@@ -1,0 +1,48 @@
+---
+- hosts: [hostname]
+  remote_user: deploy
+  sudo: true
+  tasks:
+  - name: upgrade all packages
+    yum: name=* state=latest
+  - name: install gcc-c++
+    yum: name=gcc-c++ state=present
+  - name: install git
+    yum: name=git state=present
+  - name: install nano
+    yum: name=nano state=present
+  - name: install patch
+    yum: name=patch state=present
+  - name: install readline
+    yum: name=readline state=present
+  - name: install readline-devel
+    yum: name=readline-devel state=present
+  - name: install zlib
+    yum: name=zlib state=present
+  - name: install zlib-devel
+    yum: name=zlib-devel state=present
+  - name: install libyaml-devel
+    yum: name=libyaml-devel state=present
+  - name: install libffi-devel
+    yum: name=libffi-devel state=present
+  - name: install openssl-devel
+    yum: name=openssl-devel state=present
+  - name: install make
+    yum: name=make state=present
+  - name: install bzip2
+    yum: name=bzip2 state=present
+  - name: install autoconf
+    yum: name=autoconf state=present
+  - name: install automake
+    yum: name=automake state=present
+  - name: install libtool
+    yum: name=libtool state=present
+  - name: install bison
+    yum: name=bison state=present
+  - name: install curl
+    yum: name=curl state=present
+  - name: install rubygems
+    yum: name=rubygems state=present
+  - name: install nginx
+    yum: name=nginx state=present
+  - command: sudo yum -y install nodejs npm --enablerepo=epel

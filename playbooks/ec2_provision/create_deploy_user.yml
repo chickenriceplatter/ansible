@@ -1,0 +1,25 @@
+---
+- hosts: [hostname]
+  remote_user: ec2-user
+  sudo: true
+  gather_facts: no
+  tasks:
+  - name: create deploy user
+    user: name=deploy
+          state=present
+          group=wheel
+
+  # change config so sudo does not prompt for password for deploy user
+  - lineinfile: dest=/etc/sudoers.d/cloud-init state=present insertafter="gibberish" line="deploy ALL=(ALL) NOPASSWD:ALL"
+
+  # copy authorized keys from ec2-user to deploy
+  - command: sudo -u deploy mkdir /home/deploy/.ssh
+  - command: cp /home/ec2-user/.ssh/authorized_keys /home/deploy/.ssh/authorized_keys
+  - command: chmod 600 /home/deploy/.ssh/authorized_keys
+
+  # copy machine_user key for github access, copy known_host so there is not prompt with git commands
+  - copy: src=config_files/known_hosts dest=/home/deploy/.ssh/known_hosts
+  - copy: src=~/src/credentials/machine_user/machine_user dest=/home/deploy/.ssh/machine_user mode=0600
+  - copy: src=config_files/config dest=/home/deploy/.ssh/config
+  - command: chown -R deploy /home/deploy/.ssh
+

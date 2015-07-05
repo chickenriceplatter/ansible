@@ -1,0 +1,11 @@
+---
+- name: run all playbooks
+  hosts: [hostname]
+
+#assuming ec2 instance is running on amazon linux
+  tasks:
+- include: create_deploy_user.yml
+- include: install_dependencies.yml
+- include: setup_postgresql.yml
+- include: install_ruby.yml
+- include: configure_instance.yml

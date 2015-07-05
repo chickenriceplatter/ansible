@@ -1,0 +1,14 @@
+---
+- hosts: [hostname]
+  remote_user: deploy
+  gather_facts: no
+  sudo: false
+  tasks:
+   # don't install gem docs
+   - shell: 'echo "gem: --no-rdoc --no-ri" > ~/.gemrc'
+
+   # get checksum needed for rvm
+   - shell: curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
+
+   # install rvm and latest ruby version
+   - shell: curl -L https://get.rvm.io | bash -s stable --ruby

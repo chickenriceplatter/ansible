@@ -1,0 +1,18 @@
+---
+- hosts: [host_name]
+  sudo: true
+  tasks:
+  - name: upgrade all packages
+    yum: name=* state=latest
+  - name: install epel-release
+    yum: name=epel-release state=present
+  - name: install nginx
+    yum: name=nginx state=present
+  - name: install docker
+    yum: name=docker state=present
+
+  - command: systemctl enable docker.service
+  - command: systemctl start docker.service
+
+  - command: curl -L https://github.com/docker/compose/releases/download/1.3.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  - command: chmod +x /usr/local/bin/docker-compose

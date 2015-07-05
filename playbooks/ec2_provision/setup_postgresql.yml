@@ -1,0 +1,38 @@
+---
+- hosts: [hostname]
+  remote_user: deploy
+  gather_facts: no
+  sudo: true
+  tasks:
+  - name: install postgresql
+    yum: name=postgresql state=present
+  - name: install postgresql-libs
+    yum: name=postgresql-libs state=present
+  - name: install postgresql-plperl
+    yum: name=postgresql-plperl state=present
+  - name: install postgresql-plpython
+    yum: name=postgresql-plpython state=present
+  - name: install postgresql-server
+    yum: name=postgresql-server state=present
+  - name: install postgresql-devel
+    yum: name=postgresql-devel state=present
+  - name: install python-pip
+    yum: name=python-pip state=present
+
+  - command: pip install psycopg2
+  - command: sudo service postgresql initdb
+  - command: sudo service postgresql start
+
+  # create postgresql 'deploy' user
+  - name: create deploy user
+    sudo: yes
+    sudo_user: postgres
+    postgresql_user: name=deploy password=[password] role_attr_flags=CREATEDB
+
+  # create database for app
+  - name: Create postgres database
+    sudo: yes
+    sudo_user: postgres
+    postgresql_db:
+      name: [app_name]
+      owner: deploy

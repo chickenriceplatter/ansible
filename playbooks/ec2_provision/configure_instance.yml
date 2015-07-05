@@ -1,0 +1,31 @@
+---
+- hosts: [hostname]
+  remote_user: deploy
+  sudo: true
+  gather_facts: no
+  tasks:
+
+  - command: sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
+  - command: sudo rm /etc/nginx/nginx.conf
+  - command: sudo mkdir -p /etc/nginx/sites-enabled
+  - copy: src=config_files/nginx.conf dest=/etc/nginx/nginx.conf
+  - copy: src=config_files/default dest=/etc/nginx/sites-enabled/default
+  - command: sudo service nginx start
+
+  # # create directory for unicorn pid and socket
+  - command: mkdir -p "/var/run/deploy"
+  - command: chown -R deploy "/var/run/deploy"
+
+  # # create directories for app
+  - command: mkdir -p "/data/[app_name]/"
+  - command: mkdir -p "/data/[app_name]/releases"
+  - command: mkdir -p "/data/[app_name]/shared"
+  - command: mkdir -p "/data/[app_name]/shared/config"
+  - command: mkdir -p "/data/[app_name]/shared/log"
+  - command: touch "/data/[app_name]/shared/config/database.yml"
+  - copy: src=config_files/database.yml dest=/data/[app_name]/shared/config/database.yml
+  - command: chown -R deploy "/data"
+
+  # add environment variables
+  - shell: 'echo "export RAILS_ENV=production" >> /home/deploy/.bashrc'
+  - shell: 'echo "export SECRET_KEY_BASE=[top_secret]" >> /home/deploy/.bashrc'
